@@ -1,0 +1,49 @@
+/* variables needed: border radius, border color, border width, border size */
+:root {
+    --esf-tree-border-radius: 0.25rem;
+    --esf-tree-border-color: #e2e2e2;
+    --esf-tree-border-width: 4px;
+    --esf-tree-rule-padding: 1rem;
+    --esf-tree-rule-gap: 0.5rem;
+}
+
+.esf-tree-group {
+    border: 1px solid var(--esf-tree-border-color);
+    border-radius: var(--esf-tree-border-radius);
+    margin-bottom: var(--esf-tree-rule-gap); 
+    padding: calc(var(--esf-tree-rule-gap) * 2);
+}
+
+.esf-tree-rule {
+    margin-bottom: var(--esf-tree-rule-gap);
+}
+
+.esf-tree-output-panel {
+    border: 1px solid var(--esf-tree-border-color);
+    border-radius: var(--esf-tree-border-radius);
+    margin-bottom: var(--esf-tree-rule-gap); 
+    padding: calc(var(--esf-tree-rule-gap) * 2);
+}
+
+/* Drag-to-reorder drop target — jquery-ui-sortable's forcePlaceholderSize
+   just matches the dragged rule's height, this gives it a visible shape.
+   margin-bottom matches .esf-tree-rule's own so the placeholder doesn't
+   shift the gap between rules while dragging. */
+.esf-tree-rule-placeholder {
+    border: 2px dashed var(--esf-tree-border-color);
+    border-radius: var(--esf-tree-border-radius);
+    margin-bottom: var(--esf-tree-rule-gap);
+}
+
+/* The rule actually being dragged — jquery-ui-sortable adds this class
+   automatically (no helper: 'clone' set, so it's applied straight to the
+   original .esf-tree-rule element, not a copy) and removes it on drop. */
+.esf-tree-rule.ui-sortable-helper {
+    opacity: 0.6;
+}
+
+.esf-modal-name-fields {
+    border: 1px solid var(--esf-tree-border-color);
+    border-radius: var(--esf-tree-border-radius);
+    padding: calc(var(--esf-tree-rule-gap) * 2);
+}
