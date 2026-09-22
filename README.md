@@ -47,6 +47,19 @@ Client-specific presets don't live here — see [Presets](#presets) below.
 
 ---
 
+## Rolling out to client sites
+
+Each client keeps its own copy of this plugin (`dash-*-plugin-corp-reporting/`,
+layout varies — sometimes root-level, sometimes nested under
+`feature-modules/`). This repo is the source of truth; use the
+`rollout-feature-module` skill (`.claude/skills/rollout-feature-module/`) to
+sync changes out to every client copy on the current machine — invoke it
+with `/client-sync`. It discovers the workspace root and each client's copy
+by search rather than a hardcoded path list, since the dev root differs
+machine to machine.
+
+---
+
 ## The `j|{...}` format
 
 ```
