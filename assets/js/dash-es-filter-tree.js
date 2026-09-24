@@ -353,6 +353,57 @@ var TermsService = (function ($) {
         });
     }
 
+    // Two out-of-the-box multi-select Selectize bugs, fixed the same way as
+    // dash-data-selectors/templates/selectize-options.php:
+    //  1. Clicking an option blurs the input, so you can't type straight
+    //     after picking — refocus on every item add.
+    //  2. Picking an option jumps the dropdown back to the top. addItem()
+    //     re-renders via refreshOptions() (resets scrollTop), then
+    //     setActiveOption() scrolls to the next option, then the refocus
+    //     queues another refreshOptions(). Hold the scroll position for the
+    //     whole add cycle and only release it after focus()'s own delayed
+    //     refresh — _pendingAdds covers several adds overlapping.
+    // Call AFTER seeding initial items, otherwise each seeded item would
+    // steal focus on render.
+    function keepFocusAndScrollOnAdd(inst) {
+        var dropdownScrollTop = null;
+        var pendingAdds = 0;
+
+        var _refreshOptions = inst.refreshOptions.bind(inst);
+        inst.refreshOptions = function (triggerDropdown) {
+            if (dropdownScrollTop === null) return _refreshOptions(triggerDropdown);
+            var scrollTop = dropdownScrollTop;
+            _refreshOptions(triggerDropdown);
+            if (inst.isOpen) inst.$dropdown_content.scrollTop(scrollTop);
+        };
+
+        var _setActiveOption = inst.setActiveOption.bind(inst);
+        inst.setActiveOption = function ($option, scroll, animate) {
+            if (dropdownScrollTop !== null) scroll = false;
+            return _setActiveOption($option, scroll, animate);
+        };
+
+        var _addItem = inst.addItem.bind(inst);
+        inst.addItem = function (value, silent) {
+            dropdownScrollTop = inst.isOpen ? inst.$dropdown_content.scrollTop() : null;
+            _addItem(value, silent);
+        };
+
+        inst.on('item_add', function () {
+            pendingAdds++;
+            setTimeout(function () {
+                inst.focus();
+                setTimeout(function () {
+                    if (dropdownScrollTop !== null && inst.isOpen) {
+                        inst.$dropdown_content.scrollTop(dropdownScrollTop);
+                    }
+                    pendingAdds = Math.max(0, pendingAdds - 1);
+                    if (pendingAdds === 0) dropdownScrollTop = null;
+                }, 0);
+            }, 0);
+        });
+    }
+
     function EsFilterTree($builder) {
         this.$builder = $builder;
         this.$tree = $builder.find('.esf-tree');
@@ -676,6 +727,7 @@ var TermsService = (function ($) {
     EsFilterTree.prototype._initValueWidget = function ($ruleEl, condition, syncOperator) {
         var $hidden = $ruleEl.find('.esf-tree-value-input');
         var $helper = $ruleEl.find('.esf-tree-value-helper');
+        var $loader = $ruleEl.find('.esf-tree-value-loader');
         var controlType = condition.field ? FilterFields.resolveValueControl(condition.field) : "";
 
         $helper.text(this._helperTextFor(controlType));
@@ -722,10 +774,15 @@ var TermsService = (function ($) {
                 create: true,
                 createOnBlur: true,
                 placeholder: "Type a value, press enter…",
+                // Spinner column shown only while terms are being fetched —
+                // fetchTerms() caches per field, so repeat loads resolve
+                // immediately and it never visibly flashes.
                 load: function (query, callback) {
+                    $loader.removeClass('d-none');
                     TermsService.fetchTerms(condition.field)
                         .then(callback)
-                        .catch(function () { callback(); });
+                        .catch(function () { callback(); })
+                        .always(function () { $loader.addClass('d-none'); });
                 },
                 onItemAdd: function () { syncFromItems(this); },
                 onItemRemove: function () { syncFromItems(this); },
@@ -735,6 +792,7 @@ var TermsService = (function ($) {
             initialItems.forEach(function (v) {
                 termsInst.createItem(v, false);
             });
+            keepFocusAndScrollOnAdd(termsInst);
             termsInst.onSearchChange("");
             return;
         }

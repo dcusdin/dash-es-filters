@@ -13,6 +13,7 @@
             Loading preset filters…
         </li>
     </ul>
+    <p class="esf-presets-empty text-muted small d-none">No preset filters are set up for this site yet.</p>
 </div>
 <hr>
 <div class="form-group">

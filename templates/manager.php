@@ -35,6 +35,7 @@
 
         var $rowTemplate = $('#esf-filter-row-item-template');
         var $presetsList = $manager.find('.esf-presets-list');
+        var $presetsEmptyMsg = $manager.find('.esf-presets-empty');
         var $savedList = $manager.find('.esf-saved-list');
         var $savedEmptyMsg = $manager.find('.esf-saved-empty');
         var $savedDisabledMsg = $manager.find('.esf-saved-disabled');
@@ -161,9 +162,13 @@
         function renderPresets() {
             $.dashESFilters.presetsReady.then(function () {
                 $presetsList.empty();
-                $.dashESFilters.presets().forEach(function (preset) {
+                var presets = $.dashESFilters.presets();
+                presets.forEach(function (preset) {
                     $presetsList.append(renderRow(preset, false));
                 });
+
+                $presetsList.toggleClass('d-none', !presets.length);
+                $presetsEmptyMsg.toggleClass('d-none', !!presets.length);
             });
         }
 

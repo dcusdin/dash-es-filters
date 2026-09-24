@@ -95,7 +95,7 @@
                 <button type="button" class="esf-tree-reorder-rule-btn btn btn-sm text-muted" title="Reorder"><i class="fa fa-bars"></i></button>
             </div>
             <div class="col form-row">
-                <div class="col-lg-3 mb-2">
+                <div class="col-lg-4 mb-2">
                     <select class="esf-tree-field-select form-control"></select>
                 </div>
                 <div class="col-lg-2 mb-2">
@@ -104,13 +104,16 @@
                         <option value="isnot">is not</option>
                     </select>
                 </div>
-                <div class="col-lg-7 esf-tree-value-wrap">
+                <div class="col-lg-6 esf-tree-value-wrap position-relative">
+                    <div class="esf-tree-value-loader position-absolute top-0 right-0 z-index-2 p-1 my-1 mx-3 d-none">
+                        <div class="spinner-border spinner-border-sm text-muted" role="status"></div>
+                    </div>
                     <input type="text" class="esf-tree-value-input form-control">
                     <small class="esf-tree-value-helper form-text text-muted"></small>
                 </div>
             </div>
             <div class="col-auto">
-                <button type="button" class="esf-tree-remove-rule-btn btn text-muted" title="Remove rule">&times;</button>
+                <button type="button" class="esf-tree-remove-rule-btn btn btn-outline-form text-danger" title="Remove rule">&times;</button>
             </div>
         </div>
     </div>

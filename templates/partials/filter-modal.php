@@ -86,6 +86,24 @@
                     </div>
                 </section>
 
+                <!-- <section class="mb-4 mb-lg-5">
+                    <div class="alert alert-info">
+                        <div class="mb-2 mt-1">
+                            <strong>Describe your filter in detail</strong>
+                        </div>
+                        <div class="form-row">
+                            <div class="col">
+                                <textarea placeholder="e.g Food sales in London locations" class="form-control form-control-sm _is-invalid"></textarea>
+                                <small class="form-text text-muted">We'll turn this into filter rules below; you can still edit them after.</small>
+                                <div class="invalid-feedback">Oops, something went wrong.</div>
+                            </div>
+                            <div class="col-auto">
+                                <button type="button" class="btn btn-sm btn-primary"><div class="spinner-border spinner-border-sm mr-2 d-none"></div>Build</button>
+                            </div>
+                        </div>
+                    </div>
+                </section> -->
+
                 <section class="mb-4 mb-lg-5">
                     <?php include __DIR__ . '/builder-tree.php'; ?>
                 </section>
