@@ -10,6 +10,18 @@
     wp_enqueue_script('jquery-ui-sortable');
 
     wp_enqueue_style('dash_es_filter_tree_css', RITCP_REPORTING_URL . 'dash-es-filters/assets/css/dash-es-filter-tree.css');
+
+    // Cache-busting — here rather than templates/manager.php because this
+    // partial is the one piece both the manager page and
+    // selectize-options.php's report pages include (via filter-modal.php),
+    // after every one of these handles has been enqueued.
+    require_once __DIR__ . '/../../helpers/asset-version.php';
+    dash_es_filters_version_assets([
+        'dash_es_filters'         => 'assets/js/dash-es-filters.js',
+        'dash_es_filter_tree'     => 'assets/js/dash-es-filter-tree.js',
+        'dash_es_filter_modal'    => 'assets/js/dash-es-filter-modal.js',
+        'dash_es_filter_tree_css' => 'assets/css/dash-es-filter-tree.css',
+    ]);
 ?>
 
 <!-- The name/description fields and Save/Update actions live in the modal

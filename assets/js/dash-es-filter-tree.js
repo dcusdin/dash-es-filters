@@ -770,7 +770,12 @@ var TermsService = (function ($) {
             $termsInput.selectize(withExclusiveDropdown({
                 plugins: ["remove_button"],
                 delimiter: ",",
-                persist: false,
+                // Must stay true: this Selectize version's addOption() flags
+                // every option as user-created — including ones returned by
+                // load() — so persist: false deletes a fetched term from the
+                // list the moment its item is removed, and load() never
+                // re-fetches it (loadedSearches caches the "" query).
+                persist: true,
                 create: true,
                 createOnBlur: true,
                 placeholder: "Type a value, press enter…",

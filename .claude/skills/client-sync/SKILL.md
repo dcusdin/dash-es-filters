@@ -53,7 +53,11 @@ folder this file lives in — normally `dash-es-filters`).
    ```
    Exclude the literal template placeholder folder
    `dash-[client]-plugin-corp-reporting` from the results (that's the
-   scaffold, not a real client). Always exclude any match under a path
+   scaffold, not a real client) — match on the folder's own basename only,
+   never on the full path. Real clients can be nested *inside* it (e.g.
+   `dash-[client]-plugin-corp-reporting/dash-creams-corporate-plugin-corp-reporting`),
+   so a path-substring filter like `grep -v 'dash-\[client\]'` wrongly drops
+   them. Always exclude any match under a path
    containing "Worktrees" — those are temporary git worktrees from past
    sessions, not real client checkouts.
 
@@ -82,7 +86,7 @@ folder this file lives in — normally `dash-es-filters`).
    without asking.
 
 5. **Diff before touching anything** — for each target found, run
-   `diff -rq --exclude=.git --exclude=.DS_Store <source> <target>` and
+   `diff -rq --exclude=.git --exclude=.DS_Store --exclude=.claude <source> <target>` and
    summarize what would change (files added/removed/modified). Also check
    whether the target lives inside a git repo of its own
    (`git -C <client folder> rev-parse --show-toplevel`) with uncommitted
@@ -96,8 +100,10 @@ folder this file lives in — normally `dash-es-filters`).
 
 7. **Confirm, then sync** — only after the user confirms, apply per target:
    ```
-   rsync -a --delete --exclude='.git' --exclude='.DS_Store' <source>/ <target>/
+   rsync -a --delete --exclude='.git' --exclude='.DS_Store' --exclude='.claude' <source>/ <target>/
    ```
+   `.claude/` (this skill, etc.) is source-repo tooling only — client
+   copies don't carry it.
    Skip (or ask individually about) any target flagged with uncommitted local
    changes in step 5 rather than blowing them away.
 
